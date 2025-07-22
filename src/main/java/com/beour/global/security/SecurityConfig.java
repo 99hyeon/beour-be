@@ -6,9 +6,6 @@ import com.beour.global.jwt.JWTUtil;
 import com.beour.global.jwt.LoginFilter;
 import com.beour.token.repository.RefreshTokenRepository;
 import com.beour.user.repository.UserRepository;
-import jakarta.servlet.http.HttpServletRequest;
-import java.util.Collections;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +18,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
-import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 @RequiredArgsConstructor
@@ -33,6 +29,7 @@ public class SecurityConfig {
     private final UserRepository userRepository;
     private final JWTUtil jwtUtil;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final CorsConfigurationSource corsConfigurationSource;
 
     @Bean
     public AuthenticationManager authenticationManager() throws Exception {
@@ -53,32 +50,33 @@ public class SecurityConfig {
             refreshTokenRepository);
         loginFilter.setFilterProcessesUrl("/api/login");
 
-        http.cors((cors) -> cors
-            .configurationSource(new CorsConfigurationSource() {
-                @Override
-                public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-
-                    CorsConfiguration configuration = new CorsConfiguration();
-
-                    configuration.setAllowedOrigins(
-                        List.of("http://localhost:3000",
-                            "https://localhost:3000",
-                            "http://beour-bucket.s3-website.ap-northeast-2.amazonaws.com",
-                            "https://beour.store",
-                            "https://www.beour.store")
-                    );
-                    configuration.setAllowedMethods(
-                        List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-                    configuration.setAllowCredentials(true);
-                    configuration.setAllowedHeaders(Collections.singletonList("*"));
-                    configuration.setMaxAge(3600L);
-
-                    configuration.setExposedHeaders(Collections.singletonList("Authorization"));
-
-                    return configuration;
-                }
-            })
-        );
+//        http.cors((cors) -> cors
+//            .configurationSource(new CorsConfigurationSource() {
+//                @Override
+//                public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+//
+//                    CorsConfiguration configuration = new CorsConfiguration();
+//
+//                    configuration.setAllowedOrigins(
+//                        List.of("http://localhost:3000",
+//                            "https://localhost:3000",
+//                            "http://beour-bucket.s3-website.ap-northeast-2.amazonaws.com",
+//                            "https://beour.store",
+//                            "https://www.beour.store")
+//                    );
+//                    configuration.setAllowedMethods(
+//                        List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+//                    configuration.setAllowCredentials(true);    //쿠키 헤더 허용
+//                    configuration.setAllowedHeaders(Collections.singletonList("*"));
+//                    configuration.setMaxAge(3600L); // preflight 결과 캐시
+//
+//                    configuration.setExposedHeaders(Collections.singletonList("Authorization"));
+//
+//                    return configuration;
+//                }
+//            })
+//        );
+        http.cors((cors) -> cors.configurationSource(corsConfigurationSource));
 
         http
             .authorizeHttpRequests((auth) -> auth
