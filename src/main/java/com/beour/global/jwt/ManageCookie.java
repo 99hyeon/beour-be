@@ -26,7 +26,10 @@ public class ManageCookie {
         cookie.append("Max-Age=").append(maxAge).append("; ");
         cookie.append("HttpOnly; ");
         cookie.append("SameSite=None; ");
-        cookie.append("Secure;"); // SameSite=None엔 무조건 Secure 필요
+
+        if (isSecure) {
+            cookie.append("Secure;");
+        }
 
         response.addHeader("Set-Cookie", cookie.toString());
     }

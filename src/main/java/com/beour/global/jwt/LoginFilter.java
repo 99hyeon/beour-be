@@ -39,6 +39,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
         HttpServletResponse response) {
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            return null; // 또는 그냥 return
+        }
 
         try {
             LoginDto loginDto = new ObjectMapper().readValue(request.getInputStream(),
