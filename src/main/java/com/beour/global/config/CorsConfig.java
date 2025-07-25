@@ -23,7 +23,7 @@ public class CorsConfig {
             "https://localhost:3000",
             "https://beour.store",
             "https://www.beour.store",
-            "http://beour-bucket.s3-website.ap-northeast-2.amazonaws.com"
+            "https://frontend.beour.store"
         ));
 
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
